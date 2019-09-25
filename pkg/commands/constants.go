@@ -13,6 +13,7 @@ const ORDER_CALLBACK_ID = "order-water"
 // Status Command
 const STATUS_CMD = "status"
 const STATUS_DESCRIPTION = "Show status of orders"
+const STATUS_CALLBACK_ID = "status-water"
 
 // Init Command
 const INIT_HOUR = 12
