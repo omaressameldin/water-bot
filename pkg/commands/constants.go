@@ -10,6 +10,10 @@ const ORDER_CANCEL_VAL = "no-order"
 const ORDER_CANCEL_TEXT = "No"
 const ORDER_CALLBACK_ID = "order-water"
 
+// Status Command
+const STATUS_CMD = "status"
+const STATUS_DESCRIPTION = "Show status of orders"
+
 // Init Command
 const INIT_HOUR = 12
 const INIT_MIN = 16
