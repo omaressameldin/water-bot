@@ -1,3 +1,4 @@
 package env
 
 const TOKEN_KEY = "SLACK_TOKEN"
+const ACTIONS_PORT_KEY = "ACTIONS_PORT"
