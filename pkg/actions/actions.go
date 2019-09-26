@@ -31,7 +31,15 @@ func HandleActions(bot *slacker.Slacker) {
 			switch payload.CallbackID {
 			case commands.ORDER_CALLBACK_ID:
 				{
-					orderCallback(*payload, w)
+					orderStartCallback(*payload, w)
+				}
+			case CHOICE_CALLBACK_ID_1:
+				{
+					firstChoiceCallback(*payload, w)
+				}
+			case CHOICE_CALLBACK_ID_2:
+				{
+					secondChoiceCallback(*payload, w)
 				}
 			}
 
@@ -49,4 +57,9 @@ func unmarshalPayload(r *http.Request) (*slack.InteractionCallback, error) {
 	}
 
 	return &payload, nil
+}
+
+func sendReply(w http.ResponseWriter, r Reply) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(r)
 }

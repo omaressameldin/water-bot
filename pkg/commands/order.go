@@ -28,8 +28,8 @@ func orderQuestion(rtm *slack.RTM, channel string) {
 		CallbackID: ORDER_CALLBACK_ID,
 		Actions: []slack.AttachmentAction{
 			{
-				Name:  ORDER_CONFIRM_VAL,
-				Text:  ORDER_CONFIRM_TEXT,
+				Name:  ORDER_START_VAL,
+				Text:  ORDER_START_TEXT,
 				Type:  "button",
 				Style: "primary",
 			},
