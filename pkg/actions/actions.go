@@ -7,9 +7,9 @@ import (
 	"net/http"
 
 	"github.com/nlopes/slack"
+	"github.com/omaressameldin/water-bot/internal/attachments"
 	"github.com/omaressameldin/water-bot/internal/env"
 	"github.com/omaressameldin/water-bot/internal/utils"
-	"github.com/omaressameldin/water-bot/pkg/commands"
 	"github.com/shomali11/slacker"
 )
 
@@ -29,17 +29,17 @@ func HandleActions(bot *slacker.Slacker) {
 			payload, err := unmarshalPayload(r)
 			utils.HttpError(err, "error responsing to action", w)
 			switch payload.CallbackID {
-			case commands.ORDER_CALLBACK_ID:
+			case attachments.ORDER_START_CALLBACK_ID:
 				{
-					orderStartCallback(*payload, w)
+					firstChoice(*payload, w)
 				}
-			case CHOICE_CALLBACK_ID_1:
+			case attachments.ORDER_STAGE_1_CALLBACK_ID:
 				{
-					firstChoiceCallback(*payload, w)
+					secondChoice(*payload, w)
 				}
-			case CHOICE_CALLBACK_ID_2:
+			case attachments.ORDER_STAGE_2_CALLBACK_ID:
 				{
-					secondChoiceCallback(*payload, w)
+					confirmOrder(*payload, w)
 				}
 			}
 
@@ -62,4 +62,15 @@ func unmarshalPayload(r *http.Request) (*slack.InteractionCallback, error) {
 func sendReply(w http.ResponseWriter, r Reply) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(r)
+}
+
+func mightCancel(payload slack.InteractionCallback, w http.ResponseWriter, text string) {
+	if payload.ActionCallback.AttachmentActions[0].Name == attachments.CANCEL_VAL {
+		sendReply(w, Reply{
+			Attachments: []slack.Attachment{slack.Attachment{
+				Text:  text,
+				Color: "#dc3545",
+			}},
+		})
+	}
 }

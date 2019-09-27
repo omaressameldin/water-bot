@@ -4,11 +4,8 @@ package commands
 const ORDER_CMD = "order"
 const ORDER_DESCRIPTION = "Ask for water!"
 const ORDER_QUESTION = "Do you need water today? 🍼"
-const ORDER_START_VAL = "yes-order"
 const ORDER_START_TEXT = "Yes"
-const ORDER_CANCEL_VAL = "no-order"
 const ORDER_CANCEL_TEXT = "No"
-const ORDER_CALLBACK_ID = "order-water"
 
 // Init Command
 const INIT_HOUR = 12
