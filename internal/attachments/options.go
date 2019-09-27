@@ -1,10 +1,48 @@
 package attachments
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/nlopes/slack"
 )
+
+type SelectedOption struct {
+	Name string
+	Val  string
+}
+
+func MarshalSelectedOptions(selected []SelectedOption) (string, error) {
+	marshalledSelected, err := json.Marshal(selected)
+	if err != nil {
+		return "", err
+	}
+
+	return string(marshalledSelected), nil
+}
+
+func UnMarshalSelectedOptions(selected string) ([]SelectedOption, error) {
+	var unMarshalledSelected []SelectedOption
+	err := json.Unmarshal([]byte(selected), &unMarshalledSelected)
+	if err != nil {
+		return []SelectedOption{}, nil
+	}
+
+	return unMarshalledSelected, nil
+}
+
+func AddAnswer(answerName, answerVal string) ([]SelectedOption, error) {
+	answers, err := UnMarshalSelectedOptions(
+		answerName,
+	)
+	if err != nil {
+		return []SelectedOption{}, err
+	}
+
+	answers[len(answers)-1].Val = answerVal
+
+	return answers, nil
+}
 
 func GenerateNumberOptions(begin, end int) ([]slack.AttachmentActionOption, error) {
 	if begin >= end {

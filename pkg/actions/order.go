@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/nlopes/slack"
@@ -11,29 +12,58 @@ import (
 func firstChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
 	mightCancel(payload, w, CANCEL_TEXT)
 
+	answer, err := attachments.MarshalSelectedOptions([]attachments.SelectedOption{
+		{
+			Name: CHOICE_VAL_1,
+		},
+	})
+	utils.HttpError(err, "Error sending reply", w)
+
 	addChoice(
 		w,
 		CHOICE_QUESTION_1,
 		attachments.ORDER_STAGE_1_CALLBACK_ID,
 		CHOICE_TEXT_1,
-		CHOICE_VAL_1,
+		answer,
 	)
 }
 
 func secondChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
 	mightCancel(payload, w, CANCEL_TEXT)
 
+	answers, err := attachments.AddAnswer(
+		payload.ActionCallback.AttachmentActions[0].Name,
+		payload.ActionCallback.AttachmentActions[0].SelectedOptions[0].Value,
+	)
+	utils.HttpError(err, "Error sending reply", w)
+
+	newAnswers := append(answers, attachments.SelectedOption{
+		Name: CHOICE_VAL_2,
+	})
+
+	val, err := attachments.MarshalSelectedOptions(newAnswers)
+	utils.HttpError(err, "something went wrong please try again", w)
+
 	addChoice(
 		w,
 		CHOICE_QUESTION_2,
 		attachments.ORDER_STAGE_2_CALLBACK_ID,
 		CHOICE_TEXT_2,
-		CHOICE_VAL_2,
+		val,
 	)
 }
 
 func confirmOrder(payload slack.InteractionCallback, w http.ResponseWriter) {
 	mightCancel(payload, w, CANCEL_TEXT)
+
+	answers, err := attachments.AddAnswer(
+		payload.ActionCallback.AttachmentActions[0].Name,
+		payload.ActionCallback.AttachmentActions[0].SelectedOptions[0].Value,
+	)
+	utils.HttpError(err, "Error sending reply", w)
+
+	log.Println(answers)
+	utils.HttpError(err, "something went wrong please try again", w)
 
 	sendReply(w, Reply{
 		Attachments: []slack.Attachment{slack.Attachment{
