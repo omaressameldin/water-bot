@@ -1,35 +1,104 @@
 package actions
 
 import (
-	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/nlopes/slack"
-	"github.com/omaressameldin/water-bot/pkg/commands"
+	"github.com/omaressameldin/water-bot/internal/attachments"
+	"github.com/omaressameldin/water-bot/internal/utils"
 )
 
-func orderCallback(payload slack.InteractionCallback, w http.ResponseWriter) {
-	switch payload.ActionCallback.AttachmentActions[0].Name {
-	case commands.ORDER_CONFIRM_VAL:
+func firstChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
+	mightCancel(payload, w, CANCEL_TEXT)
+
+	answer, err := attachments.MarshalSelectedOptions([]attachments.SelectedOption{
 		{
-			confirmAction(w)
-		}
-	default:
-		cancelAction(w)
+			Name: CHOICE_VAL_1,
+		},
+	})
+	utils.HttpError(err, "Error sending reply", w)
+
+	addChoice(
+		w,
+		CHOICE_QUESTION_1,
+		attachments.ORDER_STAGE_1_CALLBACK_ID,
+		CHOICE_TEXT_1,
+		answer,
+	)
+}
+
+func secondChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
+	mightCancel(payload, w, CANCEL_TEXT)
+
+	answers, err := attachments.AddAnswer(
+		payload.ActionCallback.AttachmentActions[0].Name,
+		payload.ActionCallback.AttachmentActions[0].SelectedOptions[0].Value,
+	)
+	utils.HttpError(err, "Error sending reply", w)
+
+	newAnswers := append(answers, attachments.SelectedOption{
+		Name: CHOICE_VAL_2,
+	})
+
+	val, err := attachments.MarshalSelectedOptions(newAnswers)
+	utils.HttpError(err, "something went wrong please try again", w)
+
+	addChoice(
+		w,
+		CHOICE_QUESTION_2,
+		attachments.ORDER_STAGE_2_CALLBACK_ID,
+		CHOICE_TEXT_2,
+		val,
+	)
+}
+
+func confirmOrder(payload slack.InteractionCallback, w http.ResponseWriter) {
+	mightCancel(payload, w, CANCEL_TEXT)
+
+	answers, err := attachments.AddAnswer(
+		payload.ActionCallback.AttachmentActions[0].Name,
+		payload.ActionCallback.AttachmentActions[0].SelectedOptions[0].Value,
+	)
+	utils.HttpError(err, "Error sending reply", w)
+
+	log.Println(answers)
+	utils.HttpError(err, "something went wrong please try again", w)
+
+	sendReply(w, Reply{
+		Attachments: []slack.Attachment{slack.Attachment{
+			Text:  CONFIRM_TEXT,
+			Color: "#28a745",
+		}},
+	})
+}
+
+func addChoice(
+	w http.ResponseWriter,
+	question string,
+	callbackId string,
+	selectText string,
+	selectVal string,
+) {
+	waterOptions, err := attachments.GenerateNumberOptions(0, 10)
+	if err != nil {
+		utils.HttpError(err, "Cant order water", w)
 	}
 
-}
-
-func confirmAction(w http.ResponseWriter) {
-	w.Write([]byte("confirmed"))
-}
-
-func cancelAction(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Reply{
-		Attachments: []slack.Attachment{slack.Attachment{
-			Text:  CANCEL_TEXT,
-			Color: "#dc3545",
-		}},
+	waterOrder := slack.Attachment{
+		Text:       question,
+		Color:      "#17a2b8",
+		CallbackID: callbackId,
+		Actions: []slack.AttachmentAction{
+			attachments.Select(
+				waterOptions,
+				selectText,
+				selectVal,
+			),
+			attachments.CancelButton("Cancel Order"),
+		},
+	}
+	sendReply(w, Reply{
+		Attachments: []slack.Attachment{waterOrder},
 	})
 }

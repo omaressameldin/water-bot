@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/nlopes/slack"
+	"github.com/omaressameldin/water-bot/internal/attachments"
 	"github.com/shomali11/slacker"
 )
 
@@ -25,20 +26,10 @@ func orderQuestion(rtm *slack.RTM, channel string) {
 	attachment := slack.Attachment{
 		Text:       ORDER_QUESTION,
 		Color:      "#f9a41b",
-		CallbackID: ORDER_CALLBACK_ID,
+		CallbackID: attachments.ORDER_START_CALLBACK_ID,
 		Actions: []slack.AttachmentAction{
-			{
-				Name:  ORDER_CONFIRM_VAL,
-				Text:  ORDER_CONFIRM_TEXT,
-				Type:  "button",
-				Style: "primary",
-			},
-			{
-				Name:  ORDER_CANCEL_VAL,
-				Text:  ORDER_CANCEL_TEXT,
-				Type:  "button",
-				Style: "danger",
-			},
+			attachments.ConfirmButton(ORDER_START_TEXT),
+			attachments.CancelButton(ORDER_CANCEL_TEXT),
 		},
 	}
 	rtm.PostMessage(channel, slack.MsgOptionAttachments(attachment))
