@@ -9,3 +9,7 @@ func GetToken() (string, error) {
 func GetActionPort() (string, error) {
 	return utils.GetEnv(ACTIONS_PORT_KEY)
 }
+
+func GetPostCode() (string, error) {
+	return utils.GetEnv(POSTCODE)
+}
