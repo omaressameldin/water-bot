@@ -13,3 +13,11 @@ func GetActionPort() (string, error) {
 func GetPostCode() (string, error) {
 	return utils.GetEnv(POSTCODE)
 }
+
+func GetStillWaterLink() (string, error) {
+	return utils.GetEnv(STILL_WATER_LINK)
+}
+
+func GetSparklingWaterLink() (string, error) {
+	return utils.GetEnv(SPARKLING_WATER_LINK)
+}
