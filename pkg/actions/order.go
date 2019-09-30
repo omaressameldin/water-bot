@@ -10,7 +10,9 @@ import (
 )
 
 func firstChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
-	mightCancel(payload, w, CANCEL_TEXT)
+	if mightCancel(payload, w, CANCEL_TEXT) {
+		return
+	}
 
 	answer, err := attachments.MarshalSelectedOptions([]attachments.SelectedOption{
 		{
@@ -29,7 +31,9 @@ func firstChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
 }
 
 func secondChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
-	mightCancel(payload, w, CANCEL_TEXT)
+	if mightCancel(payload, w, CANCEL_TEXT) {
+		return
+	}
 
 	answers, err := attachments.AddAnswer(
 		payload.ActionCallback.AttachmentActions[0].Name,
@@ -54,7 +58,9 @@ func secondChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
 }
 
 func confirmOrder(payload slack.InteractionCallback, w http.ResponseWriter) {
-	mightCancel(payload, w, CANCEL_TEXT)
+	if mightCancel(payload, w, CANCEL_TEXT) {
+		return
+	}
 
 	answers, err := attachments.AddAnswer(
 		payload.ActionCallback.AttachmentActions[0].Name,

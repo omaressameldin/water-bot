@@ -64,8 +64,14 @@ func sendReply(w http.ResponseWriter, r Reply) {
 	json.NewEncoder(w).Encode(r)
 }
 
-func mightCancel(payload slack.InteractionCallback, w http.ResponseWriter, text string) {
-	if payload.ActionCallback.AttachmentActions[0].Name == attachments.CANCEL_VAL {
+func mightCancel(
+	payload slack.InteractionCallback,
+	w http.ResponseWriter,
+	text string,
+) bool {
+
+	isCancel := payload.ActionCallback.AttachmentActions[0].Name == attachments.CANCEL_VAL
+	if isCancel {
 		sendReply(w, Reply{
 			Attachments: []slack.Attachment{slack.Attachment{
 				Text:  text,
@@ -73,4 +79,6 @@ func mightCancel(payload slack.InteractionCallback, w http.ResponseWriter, text 
 			}},
 		})
 	}
+
+	return isCancel
 }
