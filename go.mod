@@ -3,6 +3,7 @@ module github.com/omaressameldin/water-bot
 go 1.12
 
 require (
+	github.com/chromedp/chromedp v0.4.0
 	github.com/joho/godotenv v1.3.0
 	github.com/nlopes/slack v0.6.0
 	github.com/rapidloop/mybot v0.0.0-20160205033900-2777401b233f // indirect
