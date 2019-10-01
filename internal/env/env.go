@@ -11,13 +11,21 @@ func GetActionPort() (string, error) {
 }
 
 func GetPostCode() (string, error) {
-	return utils.GetEnv(POSTCODE)
+	return utils.GetEnv(POSTCODE_KEY)
 }
 
 func GetStillWaterLink() (string, error) {
-	return utils.GetEnv(STILL_WATER_LINK)
+	return utils.GetEnv(STILL_WATER_LINK_KEY)
 }
 
 func GetSparklingWaterLink() (string, error) {
-	return utils.GetEnv(SPARKLING_WATER_LINK)
+	return utils.GetEnv(SPARKLING_WATER_LINK_KEY)
+}
+
+func GetEmail() (string, error) {
+	return utils.GetEnv(EMAIL_KEY)
+}
+
+func GetPassword() (string, error) {
+	return utils.GetEnv(PASSWORD_KEY)
 }
