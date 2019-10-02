@@ -1,12 +1,13 @@
 package actions
 
 import (
-	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/nlopes/slack"
 	"github.com/omaressameldin/water-bot/internal/attachments"
 	"github.com/omaressameldin/water-bot/internal/utils"
+	"github.com/omaressameldin/water-bot/pkg/automation"
 )
 
 func firstChoice(payload slack.InteractionCallback, w http.ResponseWriter) {
@@ -68,8 +69,12 @@ func confirmOrder(payload slack.InteractionCallback, w http.ResponseWriter) {
 	)
 	utils.HttpError(err, "Error sending reply", w)
 
-	log.Println(answers)
-	utils.HttpError(err, "something went wrong please try again", w)
+	stillWaterBoxes, err := strconv.Atoi(answers[0].Val)
+	utils.HttpError(err, "Error sending reply", w)
+
+	sparklingWaterBoxes, err := strconv.Atoi(answers[1].Val)
+	utils.HttpError(err, "Error sending reply", w)
+	automation.OrderWater(stillWaterBoxes, sparklingWaterBoxes)
 
 	sendReply(w, Reply{
 		Attachments: []slack.Attachment{slack.Attachment{
