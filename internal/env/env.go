@@ -14,12 +14,12 @@ func GetPostCode() (string, error) {
 	return utils.GetEnv(POSTCODE_KEY)
 }
 
-func GetStillWaterLink() (string, error) {
-	return utils.GetEnv(STILL_WATER_LINK_KEY)
+func GetStillWaterId() (string, error) {
+	return utils.GetEnv(STILL_WATER_ID_KEY)
 }
 
-func GetSparklingWaterLink() (string, error) {
-	return utils.GetEnv(SPARKLING_WATER_LINK_KEY)
+func GetSparklingWaterId() (string, error) {
+	return utils.GetEnv(SPARKLING_WATER_ID_KEY)
 }
 
 func GetEmail() (string, error) {
